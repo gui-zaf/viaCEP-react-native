@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, StyleSheet, FlatList, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
+import { Text } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { User, getUsers } from "../services/userService";
 import { colors } from "../../theme/theme";
 import { UserCard } from "../components/UserCard";
 import { RootStackParamList } from "../navigation/types";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type Props = NativeStackScreenProps<RootStackParamList, "List">;
 

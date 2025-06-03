@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
+import { Text } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { User, getUserById, deleteUser } from "../services/userService";
 import { colors } from "../../theme/theme";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { RootStackParamList } from "../navigation/types";
 

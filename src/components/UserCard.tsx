@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { Text } from "react-native-paper";
+import { Text } from 'react-native';
 import { User } from "../services/userService";
 import { colors } from "../../theme/theme";
 import { MaterialCommunityIcons } from '@expo/vector-icons';

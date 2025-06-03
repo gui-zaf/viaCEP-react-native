@@ -11,8 +11,10 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TextInput, Text, ActivityIndicator } from "react-native-paper";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { TextInput, ActivityIndicator } from "react-native-paper";
+import { Text } from "react-native";
+
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { colors } from "../../theme/theme";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
