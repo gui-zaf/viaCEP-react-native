@@ -1,19 +1,20 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors } from '../../theme/theme';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+import { colors } from "../../theme/theme";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // Screens
-import { Register } from '../screens/Register';
-import { UserSearch } from '../screens/UserSearch';
-import { UserList } from '../screens/UserList';
-import { UserDetails } from '../screens/UserDetails';
+import { Register } from "../screens/Register";
+import { UserSearch } from "../screens/UserSearch";
+import { UserList } from "../screens/UserList";
+import { UserDetails } from "../screens/UserDetails";
 
 // Types
-import { TabParamList, RootStackParamList } from './types';
+import { TabParamList, RootStackParamList } from "./types";
 
 const Tab = createBottomTabNavigator<TabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -32,7 +33,7 @@ const TabNavigator = () => {
           paddingBottom: insets.bottom,
           paddingTop: 8,
           backgroundColor: colors.background,
-          borderTopColor: 'rgba(0,0,0,0.05)',
+          borderTopColor: "rgba(0,0,0,0.05)",
         },
         headerShown: false,
       }}
@@ -41,9 +42,13 @@ const TabNavigator = () => {
         name="Register"
         component={Register}
         options={{
-          tabBarLabel: 'Cadastro',
+          tabBarLabel: "Cadastro",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account-plus" size={size} color={color} />
+            <MaterialCommunityIcons
+              name="account-plus"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
@@ -51,7 +56,7 @@ const TabNavigator = () => {
         name="Search"
         component={UserSearch}
         options={{
-          tabBarLabel: 'Pesquisar',
+          tabBarLabel: "Pesquisar",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="magnify" size={size} color={color} />
           ),
@@ -61,9 +66,13 @@ const TabNavigator = () => {
         name="List"
         component={UserList}
         options={{
-          tabBarLabel: 'Listar',
+          tabBarLabel: "Listar",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="format-list-bulleted" size={size} color={color} />
+            <MaterialCommunityIcons
+              name="format-list-bulleted"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
@@ -81,15 +90,15 @@ export const AppNavigator = () => {
         }}
       >
         <Stack.Screen name="Home" component={TabNavigator} />
-        <Stack.Screen 
-          name="UserDetails" 
+        <Stack.Screen
+          name="UserDetails"
           component={UserDetails}
           options={{
-            animation: 'slide_from_right',
-            presentation: 'card',
+            animation: "slide_from_right",
+            presentation: "card",
           }}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
-}; 
+};

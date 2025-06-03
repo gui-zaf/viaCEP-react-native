@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Keyboard } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, TextInput, ActivityIndicator } from 'react-native-paper';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { User, searchUsersByName } from '../services/userService';
-import { colors } from '../../theme/theme';
-import { UserCard } from '../components/UserCard';
-import { RootStackParamList } from '../navigation/types';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, FlatList, Keyboard } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, TextInput, ActivityIndicator } from "react-native-paper";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { User, searchUsersByName } from "../services/userService";
+import { colors } from "../../theme/theme";
+import { UserCard } from "../components/UserCard";
+import { RootStackParamList } from "../navigation/types";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Search'>;
+
+type Props = NativeStackScreenProps<RootStackParamList, "Search">;
 
 export const UserSearch = ({ navigation }: Props) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -37,7 +38,7 @@ export const UserSearch = ({ navigation }: Props) => {
       setSearchResults(results);
       setHasSearched(true);
     } catch (error) {
-      console.error('Erro na pesquisa:', error);
+      console.error("Erro na pesquisa:", error);
     } finally {
       setLoading(false);
     }
@@ -45,15 +46,15 @@ export const UserSearch = ({ navigation }: Props) => {
 
   const handleUserPress = (user: User) => {
     Keyboard.dismiss();
-    navigation.navigate('UserDetails', { userId: user.id });
+    navigation.navigate("UserDetails", { userId: user.id });
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Pesquisar</Text>
       </View>
-      
+
       <View style={styles.searchContainer}>
         <TextInput
           mode="outlined"
@@ -65,9 +66,13 @@ export const UserSearch = ({ navigation }: Props) => {
           left={<TextInput.Icon icon="magnify" />}
           right={
             loading ? (
-              <TextInput.Icon icon={() => <ActivityIndicator size={20} color={colors.primary} />} />
+              <TextInput.Icon
+                icon={() => (
+                  <ActivityIndicator size={20} color={colors.primary} />
+                )}
+              />
             ) : searchQuery ? (
-              <TextInput.Icon icon="close" onPress={() => setSearchQuery('')} />
+              <TextInput.Icon icon="close" onPress={() => setSearchQuery("")} />
             ) : null
           }
           placeholder="Digite o nome para pesquisar"
@@ -76,7 +81,7 @@ export const UserSearch = ({ navigation }: Props) => {
           onSubmitEditing={() => performSearch(searchQuery)}
         />
       </View>
-      
+
       {loading ? (
         <View style={styles.messageContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
@@ -84,12 +89,20 @@ export const UserSearch = ({ navigation }: Props) => {
         </View>
       ) : !hasSearched ? (
         <View style={styles.messageContainer}>
-          <MaterialCommunityIcons name="magnify" size={64} color={colors.subtext} />
+          <MaterialCommunityIcons
+            name="magnify"
+            size={64}
+            color={colors.subtext}
+          />
           <Text style={styles.messageText}>Digite um nome para buscar</Text>
         </View>
       ) : searchResults.length === 0 ? (
         <View style={styles.messageContainer}>
-          <MaterialCommunityIcons name="account-search-outline" size={64} color={colors.subtext} />
+          <MaterialCommunityIcons
+            name="account-search-outline"
+            size={64}
+            color={colors.subtext}
+          />
           <Text style={styles.messageText}>Nenhum usuário encontrado</Text>
           <Text style={styles.messageSubtext}>Tente buscar com outro nome</Text>
         </View>
@@ -118,11 +131,11 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     backgroundColor: colors.background,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
+    borderBottomColor: "rgba(0,0,0,0.05)",
   },
   header: {
     fontSize: 34,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
   },
   searchContainer: {
@@ -137,21 +150,21 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 24,
   },
   messageText: {
     marginTop: 16,
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text,
-    textAlign: 'center',
+    textAlign: "center",
   },
   messageSubtext: {
     marginTop: 8,
     fontSize: 14,
     color: colors.subtext,
-    textAlign: 'center',
+    textAlign: "center",
   },
-}); 
+});

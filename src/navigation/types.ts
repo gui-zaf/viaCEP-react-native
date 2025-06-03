@@ -9,4 +9,4 @@ export type TabParamList = {
   Register: undefined;
   Search: undefined;
   List: undefined;
-}; 
+};

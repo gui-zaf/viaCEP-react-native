@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface User {
   id: string;
@@ -12,33 +12,35 @@ export interface User {
   createdAt: number;
 }
 
-const USERS_STORAGE_KEY = '@viaCEP:users';
+const USERS_STORAGE_KEY = "@viaCEP:users";
 
 // Normalizar texto para pesquisa (remove acentos, converte para minúsculas)
 export const normalizeText = (text: string): string => {
   return text
     .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 };
 
 // Salvar um novo usuário
-export const saveUser = async (user: Omit<User, 'id' | 'createdAt'>): Promise<User> => {
+export const saveUser = async (
+  user: Omit<User, "id" | "createdAt">
+): Promise<User> => {
   try {
     const storedUsers = await getUsers();
-    
+
     const newUser: User = {
       ...user,
       id: Date.now().toString(),
       createdAt: Date.now(),
     };
-    
+
     const updatedUsers = [...storedUsers, newUser];
     await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
-    
+
     return newUser;
   } catch (error) {
-    console.error('Erro ao salvar usuário:', error);
+    console.error("Erro ao salvar usuário:", error);
     throw error;
   }
 };
@@ -49,7 +51,7 @@ export const getUsers = async (): Promise<User[]> => {
     const jsonValue = await AsyncStorage.getItem(USERS_STORAGE_KEY);
     return jsonValue != null ? JSON.parse(jsonValue) : [];
   } catch (error) {
-    console.error('Erro ao obter usuários:', error);
+    console.error("Erro ao obter usuários:", error);
     return [];
   }
 };
@@ -58,9 +60,9 @@ export const getUsers = async (): Promise<User[]> => {
 export const getUserById = async (id: string): Promise<User | null> => {
   try {
     const users = await getUsers();
-    return users.find(user => user.id === id) || null;
+    return users.find((user) => user.id === id) || null;
   } catch (error) {
-    console.error('Erro ao buscar usuário por ID:', error);
+    console.error("Erro ao buscar usuário por ID:", error);
     return null;
   }
 };
@@ -69,15 +71,15 @@ export const getUserById = async (id: string): Promise<User | null> => {
 export const searchUsersByName = async (name: string): Promise<User[]> => {
   try {
     if (!name.trim()) return [];
-    
+
     const users = await getUsers();
     const normalizedSearchName = normalizeText(name);
-    
-    return users.filter(user => 
+
+    return users.filter((user) =>
       normalizeText(user.name).includes(normalizedSearchName)
     );
   } catch (error) {
-    console.error('Erro ao buscar usuários por nome:', error);
+    console.error("Erro ao buscar usuários por nome:", error);
     return [];
   }
 };
@@ -86,16 +88,16 @@ export const searchUsersByName = async (name: string): Promise<User[]> => {
 export const deleteUser = async (id: string): Promise<boolean> => {
   try {
     const users = await getUsers();
-    const updatedUsers = users.filter(user => user.id !== id);
-    
+    const updatedUsers = users.filter((user) => user.id !== id);
+
     if (users.length === updatedUsers.length) {
       return false; // Usuário não encontrado
     }
-    
+
     await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
     return true;
   } catch (error) {
-    console.error('Erro ao excluir usuário:', error);
+    console.error("Erro ao excluir usuário:", error);
     return false;
   }
-}; 
+};

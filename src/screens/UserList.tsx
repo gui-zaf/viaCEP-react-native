@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, FlatList, RefreshControl } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, ActivityIndicator } from 'react-native-paper';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { User, getUsers } from '../services/userService';
-import { colors } from '../../theme/theme';
-import { UserCard } from '../components/UserCard';
-import { RootStackParamList } from '../navigation/types';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet, FlatList, RefreshControl } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, ActivityIndicator } from "react-native-paper";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { User, getUsers } from "../services/userService";
+import { colors } from "../../theme/theme";
+import { UserCard } from "../components/UserCard";
+import { RootStackParamList } from "../navigation/types";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'List'>;
+
+type Props = NativeStackScreenProps<RootStackParamList, "List">;
 
 export const UserList = ({ navigation }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
@@ -23,8 +24,8 @@ export const UserList = ({ navigation }: Props) => {
       const data = await getUsers();
       setUsers(data.sort((a, b) => b.createdAt - a.createdAt)); // Ordenar por data (mais recente primeiro)
     } catch (err) {
-      console.error('Erro ao carregar usuários:', err);
-      setError('Não foi possível carregar a lista de usuários');
+      console.error("Erro ao carregar usuários:", err);
+      setError("Não foi possível carregar a lista de usuários");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -37,7 +38,7 @@ export const UserList = ({ navigation }: Props) => {
   }, [loadUsers]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       loadUsers();
     });
 
@@ -45,7 +46,7 @@ export const UserList = ({ navigation }: Props) => {
   }, [navigation, loadUsers]);
 
   const handleUserPress = (user: User) => {
-    navigation.navigate('UserDetails', { userId: user.id });
+    navigation.navigate("UserDetails", { userId: user.id });
   };
 
   if (loading) {
@@ -58,21 +59,31 @@ export const UserList = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Usuários</Text>
       </View>
-      
+
       {error ? (
         <View style={styles.errorContainer}>
-          <MaterialCommunityIcons name="alert-circle-outline" size={48} color={colors.error} />
+          <MaterialCommunityIcons
+            name="alert-circle-outline"
+            size={48}
+            color={colors.error}
+          />
           <Text style={styles.errorText}>{error}</Text>
         </View>
       ) : users.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <MaterialCommunityIcons name="account-off-outline" size={64} color={colors.subtext} />
+          <MaterialCommunityIcons
+            name="account-off-outline"
+            size={64}
+            color={colors.subtext}
+          />
           <Text style={styles.emptyText}>Nenhum usuário cadastrado</Text>
-          <Text style={styles.emptySubtext}>Cadastre um usuário na aba "Cadastro"</Text>
+          <Text style={styles.emptySubtext}>
+            Cadastre um usuário na aba "Cadastro"
+          </Text>
         </View>
       ) : (
         <FlatList
@@ -103,8 +114,8 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: colors.background,
   },
   loadingText: {
@@ -118,11 +129,11 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     backgroundColor: colors.background,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
+    borderBottomColor: "rgba(0,0,0,0.05)",
   },
   header: {
     fontSize: 34,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
   },
   listContent: {
@@ -130,32 +141,32 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 24,
   },
   errorText: {
     marginTop: 12,
     fontSize: 16,
     color: colors.error,
-    textAlign: 'center',
+    textAlign: "center",
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 24,
   },
   emptyText: {
     marginTop: 16,
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text,
   },
   emptySubtext: {
     marginTop: 8,
     fontSize: 14,
     color: colors.subtext,
-    textAlign: 'center',
+    textAlign: "center",
   },
-}); 
+});

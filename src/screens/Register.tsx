@@ -1,11 +1,22 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { TextInput, Text, ActivityIndicator } from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors } from '../../theme/theme';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { TabParamList } from '../navigation/types';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { TextInput, Text, ActivityIndicator } from "react-native-paper";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+import { colors } from "../../theme/theme";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { TabParamList } from "../navigation/types";
 import {
   formatCEP,
   validateCEP,
@@ -14,10 +25,10 @@ import {
   validateNumber,
   validateCity,
   validateUF,
-} from '../utils/validators';
-import { fetchAddressByCEP } from '../services/cepService';
+} from "../utils/validators";
+import { fetchAddressByCEP } from "../services/cepService";
 
-type Props = BottomTabScreenProps<TabParamList, 'Register'>;
+type Props = BottomTabScreenProps<TabParamList, "Register">;
 
 interface FormData {
   name: string;
@@ -30,20 +41,20 @@ interface FormData {
 }
 
 type ValidationState = {
-  [K in keyof Omit<FormData, 'complement'>]: boolean | null;
+  [K in keyof Omit<FormData, "complement">]: boolean | null;
 };
 
 export const Register = ({ navigation }: Props) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
   const [formData, setFormData] = useState<FormData>({
-    name: '',
-    cep: '',
-    street: '',
-    number: '',
-    city: '',
-    uf: '',
-    complement: '',
+    name: "",
+    cep: "",
+    street: "",
+    number: "",
+    city: "",
+    uf: "",
+    complement: "",
   });
 
   const [focused, setFocused] = useState<keyof FormData | null>(null);
@@ -64,41 +75,41 @@ export const Register = ({ navigation }: Props) => {
     uf: formData.uf ? validateUF(formData.uf) : null,
   };
 
-  const isAllValid = Object.values(isValid).every(value => value === true);
-  
+  const isAllValid = Object.values(isValid).every((value) => value === true);
+
   // Função para buscar endereço pelo CEP
   const fetchAddress = async (cep: string) => {
     if (!validateCEP(cep)) return;
-    
+
     setIsLoadingCEP(true);
     setCepError(null);
-    
+
     try {
       const address = await fetchAddressByCEP(cep);
-      
-      setFormData(prev => ({
+
+      setFormData((prev) => ({
         ...prev,
         street: address.logradouro,
         city: address.localidade,
         uf: address.uf,
-        complement: address.complemento || prev.complement
+        complement: address.complemento || prev.complement,
       }));
-      
+
       // Mantém os campos não editáveis quando preenchidos pela API
       setEditableFields({
         street: false,
         city: false,
-        uf: false
+        uf: false,
       });
     } catch (error) {
-      console.error('Erro ao buscar endereço:', error);
-      setCepError('Não foi possível buscar o endereço. Preencha manualmente.');
-      
+      console.error("Erro ao buscar endereço:", error);
+      setCepError("Não foi possível buscar o endereço. Preencha manualmente.");
+
       // Permite edição manual quando a API falha
       setEditableFields({
         street: true,
         city: true,
-        uf: true
+        uf: true,
       });
     } finally {
       setIsLoadingCEP(false);
@@ -110,43 +121,47 @@ export const Register = ({ navigation }: Props) => {
     const formatted = formatCEP(text);
 
     // Se o CEP está sendo alterado e já existem dados de endereço, limpa os campos
-    if (formatted !== formData.cep && (formData.street || formData.city || formData.uf)) {
-      setFormData(prev => ({ 
-        ...prev, 
+    if (
+      formatted !== formData.cep &&
+      (formData.street || formData.city || formData.uf)
+    ) {
+      setFormData((prev) => ({
+        ...prev,
         cep: formatted,
-        street: '',
-        city: '',
-        uf: '',
-        complement: '',
+        street: "",
+        city: "",
+        uf: "",
+        complement: "",
       }));
     } else {
-      setFormData(prev => ({ ...prev, cep: formatted }));
+      setFormData((prev) => ({ ...prev, cep: formatted }));
     }
-    
+
     // Se o usuário apagar o CEP, libera campos para edição
     if (formatted.length === 0) {
       setEditableFields({
         street: true,
         city: true,
-        uf: true
+        uf: true,
       });
     }
   };
 
   // Busca endereço quando o CEP estiver completo
   useEffect(() => {
-    if (formData.cep.length === 9) { // Formato: 00000-000
+    if (formData.cep.length === 9) {
+      // Formato: 00000-000
       fetchAddress(formData.cep);
     }
   }, [formData.cep]);
 
   const handleSubmit = async () => {
     if (!isAllValid) return;
-    
+
     try {
       // Importar o serviço de usuários
-      const { saveUser } = await import('../services/userService');
-      
+      const { saveUser } = await import("../services/userService");
+
       // Preparar os dados do usuário
       const userData = {
         name: formData.name,
@@ -157,64 +172,83 @@ export const Register = ({ navigation }: Props) => {
         uf: formData.uf,
         complement: formData.complement || undefined,
       };
-      
+
       // Salvar o usuário
       await saveUser(userData);
-      
+
       // Resetar o formulário
       setFormData({
-        name: '',
-        cep: '',
-        street: '',
-        number: '',
-        city: '',
-        uf: '',
-        complement: '',
+        name: "",
+        cep: "",
+        street: "",
+        number: "",
+        city: "",
+        uf: "",
+        complement: "",
       });
-      
+
       // Resetar os campos editáveis
       setEditableFields({
         street: false,
         city: false,
         uf: false,
       });
-      
-      Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!', [
+
+      Alert.alert("Sucesso", "Usuário cadastrado com sucesso!", [
         {
-          text: 'OK',
+          text: "OK",
           onPress: () => {
             // Navegar para a tela de listagem
-            navigation.navigate('List');
-          }
-        }
+            navigation.navigate("List");
+          },
+        },
       ]);
     } catch (error) {
-      console.error('Erro ao salvar usuário:', error);
-      Alert.alert('Erro', 'Não foi possível salvar o usuário. Tente novamente.');
+      console.error("Erro ao salvar usuário:", error);
+      Alert.alert(
+        "Erro",
+        "Não foi possível salvar o usuário. Tente novamente."
+      );
     }
   };
 
-  const getInputProps = (field: keyof FormData, label: string, icon: string, options: any = {}) => {
+  const getInputProps = (
+    field: keyof FormData,
+    label: string,
+    icon: string,
+    options: any = {}
+  ) => {
     const isFieldFocused = focused === field;
-    const isFieldValid = field === 'complement' ? 
-      Boolean(formData[field]) : // Para complemento, válido se tiver algum conteúdo
-      isValid[field as keyof ValidationState];
-    const hasError = field !== 'complement' && isFieldValid === false;
-    const isFieldEditable = 
-      field === 'street' ? editableFields.street :
-      field === 'city' ? editableFields.city :
-      field === 'uf' ? editableFields.uf : true;
-    
+    const isFieldValid =
+      field === "complement"
+        ? Boolean(formData[field]) // Para complemento, válido se tiver algum conteúdo
+        : isValid[field as keyof ValidationState];
+    const hasError = field !== "complement" && isFieldValid === false;
+    const isFieldEditable =
+      field === "street"
+        ? editableFields.street
+        : field === "city"
+        ? editableFields.city
+        : field === "uf"
+        ? editableFields.uf
+        : true;
+
     return {
       mode: "flat" as const,
       style: [styles.input, options.style],
       value: formData[field],
       placeholder: options.placeholder || `Digite ${label.toLowerCase()}`,
-      onChangeText: (text: string) => 
-        setFormData(prev => ({ ...prev, [field]: options.format ? options.format(text) : text })),
+      onChangeText: (text: string) =>
+        setFormData((prev) => ({
+          ...prev,
+          [field]: options.format ? options.format(text) : text,
+        })),
       onFocus: () => {
         setFocused(field);
-        scrollViewRef.current?.scrollTo({ y: options.scrollPosition || 0, animated: true });
+        scrollViewRef.current?.scrollTo({
+          y: options.scrollPosition || 0,
+          animated: true,
+        });
       },
       onBlur: () => setFocused(null),
       left: (
@@ -234,20 +268,20 @@ export const Register = ({ navigation }: Props) => {
         />
       ),
       outlineStyle: { borderRadius: 12 },
-      underlineStyle: { display: 'none' },
+      underlineStyle: { display: "none" },
       error: hasError,
       activeOutlineColor: hasError ? colors.error : colors.primary,
       contentStyle: styles.inputContent,
-      theme: { 
-        colors: { 
+      theme: {
+        colors: {
           background: colors.surface,
           onSurfaceVariant: colors.text,
-          error: colors.error
-        } 
+          error: colors.error,
+        },
       },
       multiline: false,
       numberOfLines: 1,
-      ellipsizeMode: 'tail',
+      ellipsizeMode: "tail",
       editable: isFieldEditable,
       ...options,
     };
@@ -261,9 +295,9 @@ export const Register = ({ navigation }: Props) => {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -271,8 +305,8 @@ export const Register = ({ navigation }: Props) => {
             <View style={styles.headerContainer}>
               <Text style={styles.header}>Cadastro</Text>
             </View>
-            
-            <ScrollView 
+
+            <ScrollView
               ref={scrollViewRef}
               style={styles.scrollView}
               contentContainerStyle={styles.scrollContent}
@@ -282,29 +316,39 @@ export const Register = ({ navigation }: Props) => {
               <View style={styles.formContainer}>
                 <View style={styles.inputRow}>
                   <View style={styles.inputField}>
-                    {renderLabel('Nome completo')}
+                    {renderLabel("Nome completo")}
                     <TextInput
-                      {...getInputProps('name', 'Nome completo', 'account-outline', {
-                        placeholder: 'Digite seu nome completo',
-                        scrollPosition: 0,
-                      })}
+                      {...getInputProps(
+                        "name",
+                        "Nome completo",
+                        "account-outline",
+                        {
+                          placeholder: "Digite seu nome completo",
+                          scrollPosition: 0,
+                        }
+                      )}
                     />
                   </View>
                 </View>
 
                 <View style={styles.inputRow}>
                   <View style={styles.inputField}>
-                    {renderLabel('CEP')}
+                    {renderLabel("CEP")}
                     <TextInput
-                      {...getInputProps('cep', 'CEP', 'map-marker-outline', {
-                        placeholder: '00000-000',
-                        keyboardType: 'numeric',
+                      {...getInputProps("cep", "CEP", "map-marker-outline", {
+                        placeholder: "00000-000",
+                        keyboardType: "numeric",
                         maxLength: 9,
                         onChangeText: handleCEPChange,
                         scrollPosition: 80,
                         right: isLoadingCEP ? (
                           <TextInput.Icon
-                            icon={() => <ActivityIndicator size={22} color={colors.primary} />}
+                            icon={() => (
+                              <ActivityIndicator
+                                size={22}
+                                color={colors.primary}
+                              />
+                            )}
                             forceTextInputFocus={false}
                           />
                         ) : formData.street && formData.city && formData.uf ? (
@@ -314,31 +358,35 @@ export const Register = ({ navigation }: Props) => {
                             size={22}
                             forceTextInputFocus={false}
                           />
-                        ) : undefined
+                        ) : undefined,
                       })}
                     />
-                    {cepError && <Text style={styles.errorText}>{cepError}</Text>}
+                    {cepError && (
+                      <Text style={styles.errorText}>{cepError}</Text>
+                    )}
                   </View>
                 </View>
 
                 <View style={styles.inputRow}>
                   <View style={styles.flex7}>
-                    {renderLabel('Logradouro')}
+                    {renderLabel("Logradouro")}
                     <TextInput
-                      {...getInputProps('street', 'Logradouro', 'road', {
-                        placeholder: 'Digite o logradouro',
+                      {...getInputProps("street", "Logradouro", "road", {
+                        placeholder: "Digite o logradouro",
                         scrollPosition: 160,
-                        style: !editableFields.street && formData.street ? 
-                          [styles.input, styles.disabledInput] : styles.input
+                        style:
+                          !editableFields.street && formData.street
+                            ? [styles.input, styles.disabledInput]
+                            : styles.input,
                       })}
                     />
                   </View>
                   <View style={styles.flex4}>
-                    {renderLabel('Número')}
+                    {renderLabel("Número")}
                     <TextInput
-                      {...getInputProps('number', 'Número', 'numeric', {
-                        placeholder: 'Nº',
-                        keyboardType: 'numeric',
+                      {...getInputProps("number", "Número", "numeric", {
+                        placeholder: "Nº",
+                        keyboardType: "numeric",
                         scrollPosition: 160,
                       })}
                     />
@@ -347,26 +395,30 @@ export const Register = ({ navigation }: Props) => {
 
                 <View style={styles.inputRow}>
                   <View style={styles.flex7}>
-                    {renderLabel('Cidade')}
+                    {renderLabel("Cidade")}
                     <TextInput
-                      {...getInputProps('city', 'Cidade', 'domain', {
-                        placeholder: 'Digite a cidade',
+                      {...getInputProps("city", "Cidade", "domain", {
+                        placeholder: "Digite a cidade",
                         scrollPosition: 240,
-                        style: !editableFields.city && formData.city ? 
-                          [styles.input, styles.disabledInput] : styles.input
+                        style:
+                          !editableFields.city && formData.city
+                            ? [styles.input, styles.disabledInput]
+                            : styles.input,
                       })}
                     />
                   </View>
                   <View style={styles.flex4}>
-                    {renderLabel('UF')}
+                    {renderLabel("UF")}
                     <TextInput
-                      {...getInputProps('uf', 'UF', 'map-outline', {
-                        placeholder: 'UF',
+                      {...getInputProps("uf", "UF", "map-outline", {
+                        placeholder: "UF",
                         maxLength: 2,
-                        autoCapitalize: 'characters',
+                        autoCapitalize: "characters",
                         scrollPosition: 240,
-                        style: !editableFields.uf && formData.uf ? 
-                          [styles.input, styles.disabledInput] : styles.input
+                        style:
+                          !editableFields.uf && formData.uf
+                            ? [styles.input, styles.disabledInput]
+                            : styles.input,
                       })}
                     />
                   </View>
@@ -374,29 +426,34 @@ export const Register = ({ navigation }: Props) => {
 
                 <View style={styles.inputRow}>
                   <View style={styles.inputField}>
-                    {renderLabel('Complemento', false)}
+                    {renderLabel("Complemento", false)}
                     <TextInput
-                      {...getInputProps('complement', 'Complemento', 'home-outline', {
-                        placeholder: 'Digite o complemento (opcional)',
-                        scrollPosition: 320,
-                      })}
+                      {...getInputProps(
+                        "complement",
+                        "Complemento",
+                        "home-outline",
+                        {
+                          placeholder: "Digite o complemento (opcional)",
+                          scrollPosition: 320,
+                        }
+                      )}
                     />
                   </View>
                 </View>
-                
+
                 <View style={styles.buttonContainer}>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={[
                       styles.button,
-                      !isAllValid && styles.buttonDisabled
+                      !isAllValid && styles.buttonDisabled,
                     ]}
                     disabled={!isAllValid}
                     onPress={handleSubmit}
                   >
                     <Text style={styles.buttonText}>Cadastrar</Text>
-                    <MaterialCommunityIcons 
-                      name="arrow-right" 
-                      size={24} 
+                    <MaterialCommunityIcons
+                      name="arrow-right"
+                      size={24}
                       color={colors.background}
                     />
                   </TouchableOpacity>
@@ -428,11 +485,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     zIndex: 1,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
+    borderBottomColor: "rgba(0,0,0,0.05)",
   },
   header: {
     fontSize: 34,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
   },
   scrollView: {
@@ -446,7 +503,7 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   inputRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   inputField: {
@@ -455,7 +512,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     color: colors.text,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 8,
   },
   input: {
@@ -463,7 +520,7 @@ const styles = StyleSheet.create({
     height: 56,
   },
   disabledInput: {
-    backgroundColor: '#F0F0F2',
+    backgroundColor: "#F0F0F2",
     opacity: 0.8,
   },
   inputContent: {
@@ -488,9 +545,9 @@ const styles = StyleSheet.create({
     height: 56,
     backgroundColor: colors.primary,
     borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 24,
   },
   buttonDisabled: {
@@ -499,10 +556,10 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.background,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   requiredAsterisk: {
     color: colors.error,
     marginLeft: 4,
   },
-}); 
+});
