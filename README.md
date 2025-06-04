@@ -1,5 +1,5 @@
-### Problemas no Snack com emulador Android e problemas de migração de ambiente
-Baseado na análise do código, não identifiquei problemas específicos que impeçam o funcionamento no Android, mas o Snack desconecta do emulador, algo que não acontece no emulador web e iOS.
+### Problemas no Snack com emulador Android e problemas de migração de ambiente (Resolvido no commit: 52aacd9b150f7c2cfd26570f66be241ac6e89516)
+Baseado na análise do código, não identifiquei problemas específicos que impeçam o funcionamento no Android, mas o Snack desconecta do emulador, algo que não acontece no emulador web e iOS. 
 
 Sobre os erros de tipagem:
 - Ocorrem por conta da migração de ambientes; Eu não inicio um projeto direto pelo Snack, mas sim pelo Cursor (editor de código como o VScode). Caso haja alguma dúvida, por favor, entre em contato comigo para que eu a esclareça.
