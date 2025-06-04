@@ -62,7 +62,7 @@ export const UserSearch = ({ navigation }: Props) => {
           value={searchQuery}
           onChangeText={setSearchQuery}
           style={styles.searchInput}
-          outlineStyle={{ borderRadius: 12 }}
+          theme={{ roundness: 12 }}
           left={<TextInput.Icon icon="magnify" />}
           right={
             loading ? (

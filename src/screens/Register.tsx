@@ -261,15 +261,21 @@ export const Register = ({ navigation }: Props) => {
           forceTextInputFocus={false}
         />
       ),
-      right: isFieldValid === true && (
+      right: isFieldValid === true ? (
         <TextInput.Icon
           icon="check-circle-outline"
           color={colors.primary}
           size={22}
           forceTextInputFocus={false}
         />
-      ),
-      outlineStyle: { borderRadius: 12 },
+      ) : hasError ? (
+        <TextInput.Icon
+          icon="close-circle-outline"
+          color={colors.error}
+          size={22}
+          forceTextInputFocus={false}
+        />
+      ) : undefined,
       underlineStyle: { display: "none" },
       error: hasError,
       activeOutlineColor: hasError ? colors.error : colors.primary,
@@ -520,6 +526,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: colors.surface,
     height: 56,
+    borderRadius: 12,
   },
   disabledInput: {
     backgroundColor: "#F0F0F2",

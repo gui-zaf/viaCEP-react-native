@@ -15,7 +15,6 @@ export const CustomTextInput = (props: CustomTextInputProps) => {
       mode="flat"
       style={[styles.input, style]}
       contentStyle={[styles.content, contentStyle]}
-      outlineStyle={styles.outline}
       underlineStyle={{ display: "none" }}
       activeOutlineColor={hasError ? colors.error : colors.primary}
       multiline={false}
@@ -36,12 +35,10 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: colors.surface,
     height: 56,
+    borderRadius: 0,
   },
   content: {
     paddingVertical: 8,
     height: 40,
-  },
-  outline: {
-    borderRadius: 12,
   },
 });

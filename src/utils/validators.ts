@@ -9,7 +9,8 @@ export const validateCEP = (cep: string): boolean => {
 };
 
 export const validateName = (name: string): boolean => {
-  return name.trim().split(" ").length >= 2 && name.length >= 3;
+  const hasOnlyLettersAndSpaces = /^[\p{L}\s]+$/u.test(name);
+  return name.trim().split(" ").length >= 2 && name.length >= 3 && hasOnlyLettersAndSpaces;
 };
 
 export const validateStreet = (street: string): boolean => {
